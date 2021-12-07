@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'index' %}>Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'tasks' %}>Tasks</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'admin:index' %}>Admin</a>
+    </li>
+{% endblock navbar %}
+{% block content %}
+<h3>Category: {{category.name}}</h3>
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Deadline</th>
+            <th scope="col">Title</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <th >{{task.schedule}}</th>
+            <th >{{task.title}}</th>
+            <th>
+                <a href="{% url 'task_detail' task.pk %}" class="btn btn-info">Detail</a>
+            </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
+

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block head %}
+    <script src="https://kit.fontawesome.com/59a3658ff3.js" crossorigin="anonymous"></script>
+{% endblock head %}
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'index' %}>Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'admin:index' %}>Admin</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'categories' %}>Categories</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'tasks' %}>Tasks</a>
+    </li>
+{% endblock navbar %}
+{% block content %}
+
+<div class="container">
+    <div class="col-md-12 col-12 col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Task Details</h4>
+            </div>
+            
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th class="text-center">
+                                </th>
+                                <th>Task Name</th>
+                                <th>Description</th>
+                                <th>Deadline</th>
+                                <th>Category</th>
+                                <th class="text-center">Priority</th>
+                            </tr>
+                            <tr>
+                                <td class="p-0 text-center align-middle">
+                                    <div class="custom-checkbox custom-control"> 
+                                        <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1" wtx-context="238690F1-7C91-4A49-80DB-2B4BCDD828DE"> 
+                                        <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
+                                    </div>
+                                </td>
+                                <td>{{task.title}}</td>
+                                <td>{{task.description}}</td>
+                                <td>{{task.schedule}}</td>
+                                <td class="align-middle">{{task.category.name}}</td>
+                                <td class="text-center align-middle">
+                                    {% if task.priority != 1 %}
+                                        {% if task.priority == 2 %}
+                                            <span style="color: Orange;">
+                                                <i class="fas fa-circle"></i>
+                                            </span>
+                                        {% else %}
+                                            <span style=" color: Yellow;">
+                                                <i class="fas fa-circle"></i>
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="color: Red;">
+                                            <i class="fas fa-circle"></i>
+                                        </span>
+                                    {% endif %}
+    
+                                </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+

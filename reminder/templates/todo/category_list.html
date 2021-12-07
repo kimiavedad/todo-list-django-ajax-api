@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'index' %}>Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'tasks' %}>Tasks</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'admin:index' %}>Admin</a>
+    </li>
+{% endblock navbar %}
+{% block content %}
+    <h3>Categories</h3>
+    <div class="list-group">
+        {% for cat in object_list %}
+            <a href="{% url 'category_detail' cat.pk %}" class="list-group-item list-group-item-action">{{cat.name}}</a>
+        {% endfor %}
+    </div>
+{% endblock content %}

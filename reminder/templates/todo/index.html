@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'admin:index' %}>Admin</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'categories' %}>Categories</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href={% url 'tasks' %}>Tasks</a>
+    </li>
+{% endblock navbar %}
+
+{% block content %}
+    <form method="POST" id="task-form">
+        {% csrf_token %}
+        <h3>Add a new task</h3>
+           <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="title">Title:</label>      
+                        <input id="title" class="form-control" type="text" name="title" maxlength="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>         
+                        <textarea name="description" id="description" cols="40" rows="10" class="form-control" required></textarea> 
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" name="category" id="category" maxlength="30" class="form-control" required> 
+                    </div>
+                    <div class="form-group">
+                        <label class="required" for="id_priority">Priority:</label>
+                        <select name="priority" required="" class="form-control">
+                            <option value="" selected="">---------</option>
+                            <option value="3">Low</option>
+                            <option value="2">Medium</option>
+                            <option value="1">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_schedule_0">Schedule:</label>       
+                        <p>
+                            Date: <input class="form-control" type="date" name="date" size="10">
+                            <br>
+                            Time: <input class="form-control" type="time" name="time" size="8" required="" id="id_schedule_1">
+                            <br>
+                        </p>
+                    </div>
+                </div>
+                <div class="mx-6 ">
+
+                    <button type="submit" class="btn btn-primary w-100">Add</button>
+                </div>
+                <!-- <div class="col-md-6">
+                    
+                </div> -->
+            </div>
+        </form>
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+{% block script %}
+    <script>
+        var CSRF_TOKEN = '{{ csrf_token }}';
+        var URL = "{% url 'index' %}"
+    </script>
+    <script src={% static '/js/index.js' %}></script>
+{% endblock script %}
+
+
+
