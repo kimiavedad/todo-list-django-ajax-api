@@ -1,15 +1,16 @@
 $(document).ready(function(){
-    console.log("inside index.js")
 
     $("#task-form").submit(function(event){
+        // event.preventDefault()
         const data = new FormData(event.target);
-        const formJSON = Object.fromEntries(data.entries());
-        // formJSON.snacks = data.getAll('snacks');
+        const formJSON = Object.fromEntries(data.entries()); 
+        console.log(formJSON)
+        formJSON.categories = data.getAll('categories');
+        formJSON['csrfmiddlewaretoken'] = CSRF_TOKEN;
         send_ajax(formJSON)
     })
 
     function send_ajax(data){
-        data['csrfmiddlewaretoken'] = CSRF_TOKEN,
         $.ajax({
             type: 'POST',
             url: URL,

@@ -1,61 +1,93 @@
+from django.db.models import query
 from django.http.response import JsonResponse
 from django.shortcuts import render
+from django.utils.regex_helper import Choice
 from django.views.generic import TemplateView, DetailView, ListView, View
 from .models import *
+from django.utils import timezone
 from datetime import datetime
+from django.db.models import Count
 
-class TaskDetailView(DetailView):
-    model = Task
-
-class TaskListView(ListView):
-    model = Task
-
-    def post(self, request, *args, **kwargs):
-        list_sorted_tasks = Task.objects.order_by('schedule')   
-        context = {
-            "object_list": list_sorted_tasks
-        } 
-        return render(request, "todo/task_list.html", context)
 
 def index(request):
     if request.method == "POST" and request.is_ajax():
-        print("y josn bargasht")
+        # print(dict(request.POST.items()))
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        priority = request.POST.get('priority')
+        categories = request.POST.getlist('categories[]')
+        schedule =  datetime.strptime(request.POST.get('schedule'), '%Y-%m-%dT%H:%M')
+        task = Task.objects.create(title=title, description=description, priority=priority, schedule=schedule)
+        for category in categories:
+            category_obj = Category.objects.get(name=category)
+            task.categories.add(category_obj)
+        # print(task.categories.all())
         return JsonResponse({})
-    return render(request, "todo/index.html")
+    return render(request, "todo/index.html", {"categories":Category.objects.all()})
 
-# class IndexView(TemplateView):
-#     template_name = "todo/index.html"
-#     def post(self, request, *args, **kwargs):
-#         # print(dict(request.POST.items()))
-#         title = request.POST.get('title')
-#         description = request.POST.get('description')
-#         priority = request.POST.get('priority')
-#         category = request.POST.get('category').lower()
-#         date = request.POST.get('date')
-#         time = request.POST.get('time')
-#         schedule =  datetime.strptime(date + " " + time, '%Y-%m-%d %H:%M')
-#         try:
-#             category_in_db = Category.objects.get(name=category)
-#         except Category.DoesNotExist:
-#             category_in_db = Category(name=category)
-#             category_in_db.save()
+def save_category(request):
+    pass   
+
+def serializer_tasks(query):
+    return JsonResponse({"object_list":list(query.values('pk', 'title', 'schedule'))})
+
+def serializer_categories(query):
+    return JsonResponse({"object_list":list(query.values('pk', 'name', 'description'))})
+
+class TaskListView(ListView):
+    model = Task
+    def post(self, request, *args, **kwargs):
+        print("inside class view")
+        queryset = Task.objects.all().order_by('schedule')   
+        return serializer_tasks(queryset)
+
+
+def expired_tasks(request):
+    print(request.method)
+    print(request.is_ajax())
+    if request.method == "POST" and request.is_ajax():
+        queryset = Task.objects.filter(schedule__lt = timezone.now())   
+        return serializer_tasks(queryset)
+    return JsonResponse({})
+
+def unexpired_tasks(request):
+    if request.method == "POST" and request.is_ajax():
+        queryset = Task.objects.filter(schedule__gte = timezone.now())   
+        return serializer_tasks(queryset)
+    return JsonResponse({})
+
+def last_tasks(request):
+    if request.method == "POST" and request.is_ajax():
+        queryset = Task.objects.all().order_by('-time_created')[:3]  
+        return serializer_tasks(queryset)
+    return JsonResponse({})
+
+
+class TaskDetailView(DetailView):
+    model = Task
     
-#         # print(category_in_db)
-#         task = Task(title=title, description=description, priority=priority, category=category_in_db, schedule=schedule)
-#         task.save()
-#         return render(request, self.template_name)
-
 
 class CategoriesListView(ListView):
     model = Category
+
+def empty_categories(request):
+    if request.method == "POST" and request.is_ajax():
+        queryset = Category.objects.all().annotate(Count('task')).filter(task__count=0)  
+        return serializer_categories(queryset)
+    return JsonResponse({})
+
+def popular_categories(request):
+    if request.method == "POST" and request.is_ajax():
+        queryset = Category.objects.annotate(Count('task')).order_by('-task__count')[:3]  
+        return serializer_categories(queryset)
+    return JsonResponse({})
 
 class CategoryDetailView(DetailView):
     model = Category
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tasks"] = Task.objects.filter(category=context["category"])
-        # print(dict(context.items()))
+        context["tasks"] = Task.objects.filter(categories=context["category"])
         return context
     
     

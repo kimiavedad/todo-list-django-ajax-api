@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block navbar %}
     <li class="nav-item">
         <a class="nav-link" href={% url 'index' %}>Home</a>
@@ -12,9 +13,25 @@
 {% endblock navbar %}
 {% block content %}
     <h3>Categories</h3>
-    <div class="list-group">
+    <div class="row">
+        <div class="col">
+            <a href={% url 'empty_categories'%} class="button btn btn-info" >Empty Categories</a>
+        </div>
+        <div class="col">
+            <a href={% url 'popular_categories'%} class="button btn btn-info">Popular Categories</a>
+        </div>
+    </div>
+
+    <div class="list-group mt-4">
         {% for cat in object_list %}
             <a href="{% url 'category_detail' cat.pk %}" class="list-group-item list-group-item-action">{{cat.name}}</a>
         {% endfor %}
     </div>
 {% endblock content %}
+{% block script %}
+    <script>
+        var CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
+    <script src={% static 'js/category_list.js' %}></script>
+{% endblock script %}
+

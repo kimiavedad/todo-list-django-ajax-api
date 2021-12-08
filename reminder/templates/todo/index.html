@@ -25,15 +25,11 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Description:</label>         
-                        <textarea name="description" id="description" cols="40" rows="10" class="form-control" required></textarea> 
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <input type="text" name="category" id="category" maxlength="30" class="form-control" required> 
+                        <textarea name="description" id="description" cols="40" rows="4" class="form-control" required></textarea> 
                     </div>
                     <div class="form-group">
                         <label class="required" for="id_priority">Priority:</label>
-                        <select name="priority" required="" class="form-control">
+                        <select name="priority" required class="form-control">
                             <option value="" selected="">---------</option>
                             <option value="3">Low</option>
                             <option value="2">Medium</option>
@@ -41,17 +37,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="id_schedule_0">Schedule:</label>       
-                        <p>
-                            Date: <input class="form-control" type="date" name="date" size="10">
-                            <br>
-                            Time: <input class="form-control" type="time" name="time" size="8" required="" id="id_schedule_1">
-                            <br>
-                        </p>
+                        <p class="group-label">Categories:</p>
+                        {% for category in categories %}
+                            <input class="ms-4" name="categories" type="checkbox" value="{{category.name}}"/>
+                            <label class="inline">{{category.name}}</label>
+                        {% endfor %}   
+                    </div> 
+                    
+                    
+                    <div class="form-group">
+                        <label for="title">Schedule:</label>      
+                        <input id="schedule" class="form-control" type="datetime-local" name="schedule" required>
                     </div>
                 </div>
-                <div class="mx-6 ">
-
+                <div class="mx-6 my-2">
                     <button type="submit" class="btn btn-primary w-100">Add</button>
                 </div>
                 <!-- <div class="col-md-6">

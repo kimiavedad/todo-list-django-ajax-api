@@ -48,7 +48,7 @@
                                 <td>{{task.title}}</td>
                                 <td>{{task.description}}</td>
                                 <td>{{task.schedule}}</td>
-                                <td class="align-middle">{{task.category.name}}</td>
+                                <td class="align-middle">{{task.categories.all|join:", "}}</td>
                                 <td class="text-center align-middle">
                                     {% if task.priority != 1 %}
                                         {% if task.priority == 2 %}
