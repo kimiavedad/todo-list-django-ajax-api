@@ -43,8 +43,8 @@
         {% for task in object_list %}
         <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <th >{{task.schedule}}</th>
-            <th >{{task.title}}</th>
+            <th>{{task.schedule | date:"Y-m-d H:i"}}</th>
+            <th>{{task.title}}</th>
             <th>
                 <a href="{% url 'task_detail' task.pk %}" class="btn btn-info">Detail</a>
             </th>

@@ -25,11 +25,22 @@ def index(request):
         return JsonResponse({})
     return render(request, "todo/index.html", {"categories":Category.objects.all()})
 
-def save_category(request):
-    pass   
+
+def add_category(request):
+    if request.method == "POST" and request.is_ajax():
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        if Category.objects.filter(name__iexact=name.lower()).exists():
+            return JsonResponse({'message':'This name already exists.'})
+        else:    
+            Category.objects.create(name=name, description=description)
+        return JsonResponse({'message':'Your category was added successfully'})
+    return render(request, "todo/add_category.html") 
+
 
 def serializer_tasks(query):
     return JsonResponse({"object_list":list(query.values('pk', 'title', 'schedule'))})
+
 
 def serializer_categories(query):
     return JsonResponse({"object_list":list(query.values('pk', 'name', 'description'))})
@@ -50,11 +61,13 @@ def expired_tasks(request):
         return serializer_tasks(queryset)
     return JsonResponse({})
 
+
 def unexpired_tasks(request):
     if request.method == "POST" and request.is_ajax():
         queryset = Task.objects.filter(schedule__gte = timezone.now())   
         return serializer_tasks(queryset)
     return JsonResponse({})
+
 
 def last_tasks(request):
     if request.method == "POST" and request.is_ajax():
@@ -62,19 +75,19 @@ def last_tasks(request):
         return serializer_tasks(queryset)
     return JsonResponse({})
 
-
 class TaskDetailView(DetailView):
     model = Task
-    
 
 class CategoriesListView(ListView):
     model = Category
+
 
 def empty_categories(request):
     if request.method == "POST" and request.is_ajax():
         queryset = Category.objects.all().annotate(Count('task')).filter(task__count=0)  
         return serializer_categories(queryset)
     return JsonResponse({})
+
 
 def popular_categories(request):
     if request.method == "POST" and request.is_ajax():

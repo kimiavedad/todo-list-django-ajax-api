@@ -1,24 +1,23 @@
 $(document).ready(function(){
-
-    $("#task-form").submit(function(event){
-        // event.preventDefault()
+    console.log("hi")
+    $("#category-form").submit(function(event){
+        event.preventDefault()
         const data = new FormData(event.target);
         const formJSON = Object.fromEntries(data.entries()); 
-        console.log(formJSON)
-        formJSON.categories = data.getAll('categories');
         formJSON['csrfmiddlewaretoken'] = CSRF_TOKEN;
         send_ajax(formJSON)
     })
 
     function send_ajax(data){
+        console.log(data)
         $.ajax({
             type: 'POST',
             url: URL,
             dataType: 'json',
             data: data,
         }).done(function(response){
-            alert("Your task was added successfully!");
-            document.getElementById("task-form").reset();
+            alert(response['message']);
+            document.getElementById("category-form").reset();
         });
     }
 })

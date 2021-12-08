@@ -25,7 +25,7 @@ $(document).ready(function(){
               
                 index_text = document.createTextNode(parseInt(key) + 1);
                 index.append(index_text)
-                shcedule_text = document.createTextNode(value['schedule']);
+                shcedule_text = document.createTextNode(convert_date(value['schedule']));
                 shcedule.append(shcedule_text)
                 title_text = document.createTextNode(value['title']);
                 title.append(title_text)
@@ -45,5 +45,22 @@ $(document).ready(function(){
             $("#tasks_list").append()
         }
 
+    };
+
+    function convert_date(date){
+        date = new Date(date);
+        year = date.getFullYear();
+        month = two_digit(date.getMonth()+1);
+        dt = two_digit(date.getDate());
+        hour= two_digit(date.getUTCHours());
+        minute = two_digit(date.getUTCMinutes());
+        return year + '-' + month + '-'+ dt + " "+ hour + ":" + minute;
+    }
+
+    function two_digit(number){
+        if (number < 10) {
+            number = '0' + number;
+        }
+        return number
     }
 })

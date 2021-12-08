@@ -20,4 +20,6 @@ urlpatterns = [
     path('popular_categories/', popular_categories, name='popular_categories'),
 
     path('tasks/<int:pk>/', TaskDetailView.as_view(), name='task_detail'),
+
+    path('add_category/',add_category, name='add_category')
 ]
